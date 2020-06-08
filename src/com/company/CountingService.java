@@ -30,7 +30,7 @@ public class CountingService {
     }
 
     public  int countSyllables(String s) {
-        final Pattern p = Pattern.compile("([ayeiou])");
+        final Pattern p = Pattern.compile("([ayeiou]+)");
         final Pattern correcting = Pattern.compile("([ayeiou][ayeiou])");
         final String lowerCase = s.toLowerCase();
         final Matcher m = p.matcher(lowerCase);
