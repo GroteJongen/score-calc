@@ -6,7 +6,7 @@ import java.util.regex.Pattern;
 public class CountingService {
 
 
-     public int countWordsInText(String text) {
+    public int countWordsInText(String text) {
         if (text.isEmpty()) {
             return 0;
         }
@@ -29,28 +29,35 @@ public class CountingService {
         return sentences.length;
     }
 
-    public  int countSyllables(String s) {
-        final Pattern p = Pattern.compile("([ayeiou]+)");
-        final Pattern correcting = Pattern.compile("([ayeiou][ayeiou])");
-        final String lowerCase = s.toLowerCase();
-        final Matcher m = p.matcher(lowerCase);
-        final Matcher killer = correcting.matcher(lowerCase);
-        int count = 0;
-        while (m.find())
-            count++;
-        if (lowerCase.endsWith("e"))
-            count--;
-        while (killer.find())
-            count--;
-        count--;
-        return count < 0 ? 1 : count;
+    public int countSyllables(String word) {
+        int syllablesCount = 0;
+
+        String processedWord = word;
+        if (processedWord.endsWith("e")) {
+            processedWord = processedWord.substring(0, processedWord.length() - 1);
+        }
+
+        Pattern doubleVowelPattern = Pattern.compile("[ayeiou]{2}[ayeiou]*");
+        Matcher doubleVowelMatcher = doubleVowelPattern.matcher(processedWord);
+        while (doubleVowelMatcher.find()) {
+            syllablesCount++;
+        }
+        processedWord = processedWord.replaceAll(doubleVowelPattern.pattern(), "");
+
+        Pattern singleVowelPattern = Pattern.compile("[ayeiou]");
+        Matcher singleVowelMatcher = singleVowelPattern.matcher(processedWord);
+        while (singleVowelMatcher.find()) {
+            syllablesCount++;
+        }
+        return syllablesCount == 0 ? 1 : syllablesCount;
     }
 
-    public  int countPolySyllables(String[] worden) {
+
+    public int countPolySyllables(String[] worden) {
         int counter = 0;
         for (String s : worden) {
             String word = s.toLowerCase();
-            if (countSyllables(word) > 1) {
+            if (countSyllables(word) >= 2) {
                 counter++;
             }
         }
