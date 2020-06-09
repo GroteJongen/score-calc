@@ -1,9 +1,9 @@
-package com.company;
+package com.input;
 
 import java.io.BufferedReader;
 
 public class FileReaderService {
-    public static String readFromFile(String fileName) {
+    public String readFromFile(String fileName) {
         try (java.io.FileReader fileReader = new java.io.FileReader(fileName);
              BufferedReader bufferedReader = new BufferedReader(fileReader)) {
             StringBuilder stringBuilder = new StringBuilder();
@@ -18,7 +18,7 @@ public class FileReaderService {
             }
             return stringBuilder.toString();
         } catch (Exception e) {
-            System.out.println("No file");
+            System.out.println("No input");
         }
         return "";
     }

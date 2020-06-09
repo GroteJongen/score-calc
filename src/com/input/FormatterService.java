@@ -1,4 +1,4 @@
-package com.company;
+package com.input;
 
 public class FormatterService {
     public String formatText(String text) {

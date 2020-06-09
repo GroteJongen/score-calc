@@ -1,10 +1,10 @@
-package com.company;
+package com.input;
 
 import java.util.Scanner;
 
 public class UserInputService {
 
-    public String getInputFromUser(){
+    public String getInputFromUser() {
         Scanner scanner = new Scanner(System.in);
         return scanner.nextLine();
     }

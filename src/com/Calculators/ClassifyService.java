@@ -1,4 +1,4 @@
-package com.company;
+package com.Calculators;
 
 import java.text.DecimalFormat;
 

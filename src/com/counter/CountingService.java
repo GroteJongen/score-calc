@@ -1,4 +1,4 @@
-package com.company;
+package com.counter;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -29,7 +29,26 @@ public class CountingService {
         return sentences.length;
     }
 
-    public int countSyllables(String word) {
+    public int countSyllables(String sentence) {
+        String normalizedSentence = sentence.toLowerCase()
+                .replaceAll(",", "")
+                .replaceAll("\"", "")
+                .replaceAll(":", "")
+                .replaceAll("!", "")
+                .replaceAll(";", "")
+                .replaceAll("\n;", "")
+                .replaceAll("[.]", "");
+
+        final String[] words = normalizedSentence.split(" ");
+        int syllablesCount = 0;
+        for (String word : words
+        ) {
+            syllablesCount += countSyllablesInWord(word);
+        }
+        return syllablesCount;
+    }
+
+    private int countSyllablesInWord(String word) {
         int syllablesCount = 0;
 
         String processedWord = word;
@@ -57,7 +76,7 @@ public class CountingService {
         int counter = 0;
         for (String s : worden) {
             String word = s.toLowerCase();
-            if (countSyllables(word) >= 2) {
+            if (countSyllables(word) > 2) {
                 counter++;
             }
         }
