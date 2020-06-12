@@ -9,7 +9,9 @@ import com.input.FileReaderService;
 import com.input.FormatterService;
 import com.input.UserInputService;
 
+
 public class Main {
+
     public static void main(String[] args) {
 
         CountingService countingService = new CountingService();
@@ -22,7 +24,7 @@ public class Main {
         App app = new App(countingService, calculateService, displayService, fileReaderService, formatterService, userInputService, classifyService);
         //app.runApp();
         WelcomeScreen welcomeScreen = new WelcomeScreen();
-        
+
     }
 
 }
