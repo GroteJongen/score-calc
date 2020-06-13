@@ -57,6 +57,7 @@ public class WelcomeScreen extends JFrame implements ActionListener {
   private String getPrepareMsgForAllParameters() {
     final String yearsMsg = " years old";
     final String splitter = " ";
+    final String rowSplitter = " | ";
     double ariAge =
         classifyService.classify(
             Messages.ARI_METHOD_NAME, calculateService.calculateScore(getInput()));
@@ -66,7 +67,7 @@ public class WelcomeScreen extends JFrame implements ActionListener {
     double smogAge =
         classifyService.classify(
             Messages.SMOG_METHOD_NAME,
-            calculateService.smogMethod(getInput(), getInput().split(" ")));
+            calculateService.smogMethod(getInput(), getInput().split(splitter)));
     double clAge =
         classifyService.classify(
             Messages.CL_METHOD_NAME, calculateService.calculateScore(getInput()));
@@ -74,30 +75,30 @@ public class WelcomeScreen extends JFrame implements ActionListener {
     String ariResult =
         ariMsg
             + decimalFormat.format(calculateService.calculateScore(getInput()))
-            + splitter
+            + rowSplitter
             + ariAge
             + yearsMsg;
     String fkResult =
         fkMsg
             + decimalFormat.format(calculateService.fleshKincaidMethod(getInput()))
-            + splitter
+            + rowSplitter
             + fkAge
             + yearsMsg;
     String smogResult =
         smogMsg
             + decimalFormat.format(
                 calculateService.smogMethod(getInput(), getInput().split(splitter)))
-            + splitter
+            + rowSplitter
             + smogAge
             + yearsMsg;
     String clResult =
         clMsg
             + decimalFormat.format(calculateService.colemanMethod(getInput()))
-            + splitter
+            + rowSplitter
             + clAge
             + yearsMsg;
 
-    return ariResult + splitter + fkResult + splitter + smogResult + splitter + clResult;
+    return ariResult + rowSplitter + fkResult + rowSplitter + smogResult + rowSplitter + clResult;
   }
 
   private String getInput() {
