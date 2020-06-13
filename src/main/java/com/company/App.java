@@ -59,7 +59,7 @@ public class App {
         }
     }
 
-    private void printAllNecessaryParameters(String text) {
+    public void printAllNecessaryParameters(String text) {
         double ariAge = classifyService.classify(Messages.ARI_METHOD_NAME, calculateService.calculateScore(text));
         double fkAge = classifyService.classify(Messages.FK_METHOD_NAME, calculateService.fleshKincaidMethod(text));
         double smogAge = classifyService.classify(Messages.SMOG_METHOD_NAME, calculateService.smogMethod(text, text.split(" ")));

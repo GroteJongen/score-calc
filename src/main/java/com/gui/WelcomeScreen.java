@@ -1,8 +1,10 @@
 package com.gui;
 
 import com.Calculators.CalculateService;
+import com.Calculators.ClassifyService;
 import com.counter.CountingService;
 import com.display.DisplayService;
+import com.display.Messages;
 import com.input.FormatterService;
 
 import javax.swing.*;
@@ -12,6 +14,11 @@ import java.awt.event.ActionListener;
 import java.text.DecimalFormat;
 
 public class WelcomeScreen extends JFrame implements ActionListener {
+  private final String ariMsg = "Ari result is equal to: ";
+  private final String fkMsg = "Fk result is equal to: ";
+  private final String smogMsg = "SMOG result is equal to: ";
+  private final String clMsg = "CL result is equal to: ";
+
   private JPanel jPanel = new JPanel();
   private JFrame calculateWindow = new JFrame();
   private JPanel panelWindow = new JPanel();
@@ -27,7 +34,6 @@ public class WelcomeScreen extends JFrame implements ActionListener {
   private JLabel label = new JLabel();
   private JLabel labelWithParams = new JLabel();
   private JLabel scoreLabel = new JLabel();
-
   private JTextField nameTextField = new JTextField();
 
   private CountingService countingService = new CountingService();
@@ -35,45 +41,10 @@ public class WelcomeScreen extends JFrame implements ActionListener {
   private FormatterService formatterService = new FormatterService();
   private CalculateService calculateService = new CalculateService(countingService);
   private DecimalFormat decimalFormat = new DecimalFormat("##.00");
+  private ClassifyService classifyService = new ClassifyService();
 
   public WelcomeScreen() {
     prepareAll();
-    fileButton.addActionListener(
-        (item) -> {
-          jFrame.setVisible(false);
-          calculateWindow.setVisible(true);
-        });
-    jButton.setBounds(5, 5, 5, 5);
-    jButton.addActionListener(this);
-    fk.addActionListener(
-        e -> {
-          scoreLabel.setText(
-              "Fk result is equal to: "
-                  + decimalFormat.format(calculateService.fleshKincaidMethod(getInput())));
-        });
-    ari.addActionListener(
-        e -> {
-          scoreLabel.setText(
-              "Ari result is equal to: "
-                  + decimalFormat.format(calculateService.calculateScore(getInput())));
-        });
-    smog.addActionListener(
-        e -> {
-          scoreLabel.setText(
-              "SMOG result is equal to: "
-                  + decimalFormat.format(
-                      calculateService.smogMethod(getInput(), getInput().split(" "))));
-        });
-    cl.addActionListener(
-        e -> {
-          scoreLabel.setText(
-              "Coleman result is equal to: "
-                  + decimalFormat.format(calculateService.colemanMethod(getInput())));
-        });
-
-    all.addActionListener(e -> {
-      scoreLabel.setText(getPrepareMsgForAllParameters());
-    });
   }
 
   @Override
@@ -83,18 +54,50 @@ public class WelcomeScreen extends JFrame implements ActionListener {
     calculateWindow.setVisible(true);
   }
 
-  private String getPrepareMsgForAllParameters(){
-    String ariMsg = "Ari result is equal to: "
-            + decimalFormat.format(calculateService.calculateScore(getInput()));
-    String fkMsg = "Fk result is equal to: "
-            + decimalFormat.format(calculateService.fleshKincaidMethod(getInput()));
-    String smogMsg =  "SMOG result is equal to: "
-            + decimalFormat.format(
+  private String getPrepareMsgForAllParameters() {
+    final String yearsMsg = " years old";
+    final String splitter = " ";
+    double ariAge =
+        classifyService.classify(
+            Messages.ARI_METHOD_NAME, calculateService.calculateScore(getInput()));
+    double fkAge =
+        classifyService.classify(
+            Messages.FK_METHOD_NAME, calculateService.fleshKincaidMethod(getInput()));
+    double smogAge =
+        classifyService.classify(
+            Messages.SMOG_METHOD_NAME,
             calculateService.smogMethod(getInput(), getInput().split(" ")));
-    String clMsg =    "Coleman result is equal to: "
-            + decimalFormat.format(calculateService.colemanMethod(getInput()));
+    double clAge =
+        classifyService.classify(
+            Messages.CL_METHOD_NAME, calculateService.calculateScore(getInput()));
 
-    return ariMsg + " " +  fkMsg + " " +  smogMsg + " " + clMsg;
+    String ariResult =
+        ariMsg
+            + decimalFormat.format(calculateService.calculateScore(getInput()))
+            + splitter
+            + ariAge
+            + yearsMsg;
+    String fkResult =
+        fkMsg
+            + decimalFormat.format(calculateService.fleshKincaidMethod(getInput()))
+            + splitter
+            + fkAge
+            + yearsMsg;
+    String smogResult =
+        smogMsg
+            + decimalFormat.format(
+                calculateService.smogMethod(getInput(), getInput().split(splitter)))
+            + splitter
+            + smogAge
+            + yearsMsg;
+    String clResult =
+        clMsg
+            + decimalFormat.format(calculateService.colemanMethod(getInput()))
+            + splitter
+            + clAge
+            + yearsMsg;
+
+    return ariResult + splitter + fkResult + splitter + smogResult + splitter + clResult;
   }
 
   private String getInput() {
@@ -151,9 +154,47 @@ public class WelcomeScreen extends JFrame implements ActionListener {
     jFrame.add(jPanel, BorderLayout.CENTER);
   }
 
+  public void prepareButtons() {
+    fileButton.addActionListener(
+        (item) -> {
+          jFrame.setVisible(false);
+          calculateWindow.setVisible(true);
+        });
+    jButton.setBounds(5, 5, 5, 5);
+    jButton.addActionListener(this);
+    fk.addActionListener(
+        e -> {
+          scoreLabel.setText(
+              fkMsg + decimalFormat.format(calculateService.fleshKincaidMethod(getInput())));
+        });
+    ari.addActionListener(
+        e -> {
+          scoreLabel.setText(
+              ariMsg + decimalFormat.format(calculateService.calculateScore(getInput())));
+        });
+    smog.addActionListener(
+        e -> {
+          scoreLabel.setText(
+              smogMsg
+                  + decimalFormat.format(
+                      calculateService.smogMethod(getInput(), getInput().split(" "))));
+        });
+    cl.addActionListener(
+        e -> {
+          scoreLabel.setText(
+              clMsg + decimalFormat.format(calculateService.colemanMethod(getInput())));
+        });
+
+    all.addActionListener(
+        e -> {
+          scoreLabel.setText(getPrepareMsgForAllParameters());
+        });
+  }
+
   public void prepareAll() {
     prepareFrame();
     prepareLabels();
     preparePanels();
+    prepareButtons();
   }
 }
