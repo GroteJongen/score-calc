@@ -5,6 +5,7 @@ import com.Calculators.ClassifyService;
 import com.counter.CountingService;
 import com.display.DisplayService;
 import com.display.Messages;
+import com.input.FileReaderService;
 import com.input.FormatterService;
 
 import javax.swing.*;
@@ -18,6 +19,7 @@ public class WelcomeScreen extends JFrame implements ActionListener {
   private final String fkMsg = "Fk result is equal to: ";
   private final String smogMsg = "SMOG result is equal to: ";
   private final String clMsg = "CL result is equal to: ";
+  private final String wrongFileMsg = "File does not exist";
 
   private JPanel jPanel = new JPanel();
   private JFrame calculateWindow = new JFrame();
@@ -42,6 +44,7 @@ public class WelcomeScreen extends JFrame implements ActionListener {
   private CalculateService calculateService = new CalculateService(countingService);
   private DecimalFormat decimalFormat = new DecimalFormat("##.00");
   private ClassifyService classifyService = new ClassifyService();
+  private FileReaderService fileReaderService = new FileReaderService(formatterService);
 
   public WelcomeScreen() {
     prepareAll();
@@ -49,7 +52,7 @@ public class WelcomeScreen extends JFrame implements ActionListener {
 
   @Override
   public void actionPerformed(ActionEvent e) {
-    labelWithParams.setText(displayService.printAllParametersOfText(getInput()));
+    labelWithParams.setText(displayService.printAllParametersOfText(getFormattedInput()));
     jFrame.setVisible(false);
     calculateWindow.setVisible(true);
   }
@@ -60,40 +63,41 @@ public class WelcomeScreen extends JFrame implements ActionListener {
     final String rowSplitter = " | ";
     double ariAge =
         classifyService.classify(
-            Messages.ARI_METHOD_NAME, calculateService.calculateScore(getInput()));
+            Messages.ARI_METHOD_NAME, calculateService.calculateScore(getFormattedInput()));
     double fkAge =
         classifyService.classify(
-            Messages.FK_METHOD_NAME, calculateService.fleshKincaidMethod(getInput()));
+            Messages.FK_METHOD_NAME, calculateService.fleshKincaidMethod(getFormattedInput()));
     double smogAge =
         classifyService.classify(
             Messages.SMOG_METHOD_NAME,
-            calculateService.smogMethod(getInput(), getInput().split(splitter)));
+            calculateService.smogMethod(getFormattedInput(), getFormattedInput().split(splitter)));
     double clAge =
         classifyService.classify(
-            Messages.CL_METHOD_NAME, calculateService.calculateScore(getInput()));
+            Messages.CL_METHOD_NAME, calculateService.calculateScore(getFormattedInput()));
 
     String ariResult =
         ariMsg
-            + decimalFormat.format(calculateService.calculateScore(getInput()))
+            + decimalFormat.format(calculateService.calculateScore(getFormattedInput()))
             + rowSplitter
             + ariAge
             + yearsMsg;
     String fkResult =
         fkMsg
-            + decimalFormat.format(calculateService.fleshKincaidMethod(getInput()))
+            + decimalFormat.format(calculateService.fleshKincaidMethod(getFormattedInput()))
             + rowSplitter
             + fkAge
             + yearsMsg;
     String smogResult =
         smogMsg
             + decimalFormat.format(
-                calculateService.smogMethod(getInput(), getInput().split(splitter)))
+                calculateService.smogMethod(
+                    getFormattedInput(), getFormattedInput().split(splitter)))
             + rowSplitter
             + smogAge
             + yearsMsg;
     String clResult =
         clMsg
-            + decimalFormat.format(calculateService.colemanMethod(getInput()))
+            + decimalFormat.format(calculateService.colemanMethod(getFormattedInput()))
             + rowSplitter
             + clAge
             + yearsMsg;
@@ -101,16 +105,20 @@ public class WelcomeScreen extends JFrame implements ActionListener {
     return ariResult + rowSplitter + fkResult + rowSplitter + smogResult + rowSplitter + clResult;
   }
 
-  private String getInput() {
+  private String getFormattedInput() {
     return formatterService.formatText(nameTextField.getText());
   }
 
+  private String getRawInput() {
+    return nameTextField.getText();
+  }
+
   private void prepareFrame() {
-    calculateWindow.setSize(500, 400);
+    calculateWindow.setSize(1100, 500);
     calculateWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     calculateWindow.setTitle("All parameters window");
 
-    jFrame.setSize(500, 400);
+    jFrame.setSize(850, 500);
     jFrame.setVisible(true);
     jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     jFrame.setTitle("My first gui");
@@ -119,8 +127,8 @@ public class WelcomeScreen extends JFrame implements ActionListener {
     add(nameTextField);
   }
 
-  public void prepareLabels() {
-    Font paramsFont = new Font("Courier", Font.PLAIN, 20);
+  private void prepareLabels() {
+    Font paramsFont = new Font("Courier", Font.PLAIN, 15);
     labelWithParams.setFont(paramsFont);
     labelWithParams.setText("");
     labelWithParams.setBounds(20, 20, 70, 30);
@@ -128,13 +136,14 @@ public class WelcomeScreen extends JFrame implements ActionListener {
     scoreLabel.setFont(paramsFont);
     fk.setFont(paramsFont);
 
-    label.setText("My first gui!");
+    label.setText(
+        "Select console input if you want to paste text or file input if you want to load it from file!");
     label.setFont(paramsFont);
     label.setBounds(40, 20, 100, 30);
     add(label);
   }
 
-  public void preparePanels() {
+  private void preparePanels() {
     panelWindow.setBorder(BorderFactory.createEmptyBorder(30, 30, 10, 30));
     panelWindow.setLayout(new GridLayout(0, 1));
     ari.setBounds(5, 5, 5, 5);
@@ -152,10 +161,11 @@ public class WelcomeScreen extends JFrame implements ActionListener {
     jPanel.add(label);
     jPanel.add(nameTextField);
     jPanel.add(jButton);
+    jPanel.add(fileButton);
     jFrame.add(jPanel, BorderLayout.CENTER);
   }
 
-  public void prepareButtons() {
+  private void prepareButtons() {
     fileButton.addActionListener(
         (item) -> {
           jFrame.setVisible(false);
@@ -166,33 +176,44 @@ public class WelcomeScreen extends JFrame implements ActionListener {
     fk.addActionListener(
         e -> {
           scoreLabel.setText(
-              fkMsg + decimalFormat.format(calculateService.fleshKincaidMethod(getInput())));
+              fkMsg
+                  + decimalFormat.format(calculateService.fleshKincaidMethod(getFormattedInput())));
         });
     ari.addActionListener(
         e -> {
           scoreLabel.setText(
-              ariMsg + decimalFormat.format(calculateService.calculateScore(getInput())));
+              ariMsg + decimalFormat.format(calculateService.calculateScore(getFormattedInput())));
         });
     smog.addActionListener(
         e -> {
           scoreLabel.setText(
               smogMsg
                   + decimalFormat.format(
-                      calculateService.smogMethod(getInput(), getInput().split(" "))));
+                      calculateService.smogMethod(
+                          getFormattedInput(), getFormattedInput().split(" "))));
         });
     cl.addActionListener(
         e -> {
           scoreLabel.setText(
-              clMsg + decimalFormat.format(calculateService.colemanMethod(getInput())));
+              clMsg + decimalFormat.format(calculateService.colemanMethod(getFormattedInput())));
         });
 
     all.addActionListener(
         e -> {
           scoreLabel.setText(getPrepareMsgForAllParameters());
         });
+    fileButton.addActionListener(
+        e -> {
+          String content = fileReaderService.readFromFile(getRawInput());
+          if (content.equals("file does not exist")) {
+            labelWithParams.setText(wrongFileMsg);
+          } else {
+            labelWithParams.setText(content);
+          }
+        });
   }
 
-  public void prepareAll() {
+  private void prepareAll() {
     prepareFrame();
     prepareLabels();
     preparePanels();
