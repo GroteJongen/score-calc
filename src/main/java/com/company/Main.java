@@ -17,8 +17,8 @@ public class Main {
         CountingService countingService = new CountingService();
         CalculateService calculateService = new CalculateService(countingService);
         DisplayService displayService = new DisplayService(countingService);
-        FileReaderService fileReaderService = new FileReaderService();
         FormatterService formatterService = new FormatterService();
+        FileReaderService fileReaderService = new FileReaderService(formatterService);
         UserInputService userInputService = new UserInputService();
         ClassifyService classifyService = new ClassifyService();
         App app = new App(countingService, calculateService, displayService, fileReaderService, formatterService, userInputService, classifyService);

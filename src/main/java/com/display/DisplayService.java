@@ -15,15 +15,12 @@ public class DisplayService {
     String characters = " Characters: " + countingService.countCharactersInText(text)+ "|";
     String syllables = " Syllables: " + countingService.countSyllables(text) + "|";
     String polySyllables = " Polysyllables: " + countingService.countPolySyllables(text.split(" ")) + "|";
-    StringBuilder stringBuilder = new StringBuilder();
-    stringBuilder
-        .append(words)
-        .append(sentences)
-        .append(characters)
-        .append(syllables)
-        .append(polySyllables);
 
-    return stringBuilder.toString();
+    return words +
+            sentences +
+            characters +
+            syllables +
+            polySyllables;
   }
 
   public void printMsg(String msg) {
