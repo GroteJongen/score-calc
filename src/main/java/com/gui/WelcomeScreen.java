@@ -1,10 +1,8 @@
 package com.gui;
 
-import com.Calculators.CalculateService;
-import com.Calculators.ClassifyService;
+import com.Calculators.*;
 import com.counter.CountingService;
 import com.display.DisplayService;
-import com.display.Messages;
 import com.input.FileReaderService;
 import com.input.FormatterService;
 
@@ -15,11 +13,6 @@ import java.awt.event.ActionListener;
 import java.text.DecimalFormat;
 
 public class WelcomeScreen extends JFrame implements ActionListener {
-  private final String ariMsg = "Ari result is equal to: ";
-  private final String fkMsg = "Fk result is equal to: ";
-  private final String smogMsg = "SMOG result is equal to: ";
-  private final String clMsg = "CL result is equal to: ";
-  private final String wrongFileMsg = "File does not exist";
 
   private JPanel jPanel = new JPanel();
   private JFrame calculateWindow = new JFrame();
@@ -41,10 +34,23 @@ public class WelcomeScreen extends JFrame implements ActionListener {
   private CountingService countingService = new CountingService();
   private DisplayService displayService = new DisplayService(countingService);
   private FormatterService formatterService = new FormatterService();
-  private CalculateService calculateService = new CalculateService(countingService);
   private DecimalFormat decimalFormat = new DecimalFormat("##.00");
-  private ClassifyService classifyService = new ClassifyService();
   private FileReaderService fileReaderService = new FileReaderService(formatterService);
+
+  private AriIndexScore ariIndexScore = new AriIndexScore();
+  private SmogScore smogScore = new SmogScore();
+  private FleschKincaidScore fleschKincaidScore = new FleschKincaidScore();
+  private ColemanScore colemanScore = new ColemanScore();
+  private CalculateContext calculateContext = new CalculateContext();
+  private ClassifyService classifyService = new ClassifyService();
+  private MsgCreationService msgCreationService =
+      new MsgCreationService(
+          classifyService,
+          calculateContext,
+          ariIndexScore,
+          smogScore,
+          fleschKincaidScore,
+          colemanScore);
 
   public WelcomeScreen() {
     prepareAll();
@@ -55,54 +61,6 @@ public class WelcomeScreen extends JFrame implements ActionListener {
     labelWithParams.setText(displayService.printAllParametersOfText(getFormattedInput()));
     jFrame.setVisible(false);
     calculateWindow.setVisible(true);
-  }
-
-  private String getPrepareMsgForAllParameters() {
-    final String yearsMsg = " years old";
-    final String splitter = " ";
-    final String rowSplitter = " | ";
-    double ariAge =
-        classifyService.classify(
-            Messages.ARI_METHOD_NAME, calculateService.calculateScore(getFormattedInput()));
-    double fkAge =
-        classifyService.classify(
-            Messages.FK_METHOD_NAME, calculateService.fleshKincaidMethod(getFormattedInput()));
-    double smogAge =
-        classifyService.classify(
-            Messages.SMOG_METHOD_NAME,
-            calculateService.smogMethod(getFormattedInput(), getFormattedInput().split(splitter)));
-    double clAge =
-        classifyService.classify(
-            Messages.CL_METHOD_NAME, calculateService.calculateScore(getFormattedInput()));
-
-    String ariResult =
-        ariMsg
-            + decimalFormat.format(calculateService.calculateScore(getFormattedInput()))
-            + rowSplitter
-            + ariAge
-            + yearsMsg;
-    String fkResult =
-        fkMsg
-            + decimalFormat.format(calculateService.fleshKincaidMethod(getFormattedInput()))
-            + rowSplitter
-            + fkAge
-            + yearsMsg;
-    String smogResult =
-        smogMsg
-            + decimalFormat.format(
-                calculateService.smogMethod(
-                    getFormattedInput(), getFormattedInput().split(splitter)))
-            + rowSplitter
-            + smogAge
-            + yearsMsg;
-    String clResult =
-        clMsg
-            + decimalFormat.format(calculateService.colemanMethod(getFormattedInput()))
-            + rowSplitter
-            + clAge
-            + yearsMsg;
-
-    return ariResult + rowSplitter + fkResult + rowSplitter + smogResult + rowSplitter + clResult;
   }
 
   private String getFormattedInput() {
@@ -175,38 +133,42 @@ public class WelcomeScreen extends JFrame implements ActionListener {
     jButton.addActionListener(this);
     fk.addActionListener(
         e -> {
+          calculateContext.setCalculateStrategy(fleschKincaidScore);
           scoreLabel.setText(
-              fkMsg
-                  + decimalFormat.format(calculateService.fleshKincaidMethod(getFormattedInput())));
+              GuiMessages.FK_MSG
+                  + decimalFormat.format(calculateContext.calculateScore(getFormattedInput())));
         });
     ari.addActionListener(
         e -> {
+          calculateContext.setCalculateStrategy(ariIndexScore);
           scoreLabel.setText(
-              ariMsg + decimalFormat.format(calculateService.calculateScore(getFormattedInput())));
+              GuiMessages.ARI_MSG
+                  + decimalFormat.format(calculateContext.calculateScore(getFormattedInput())));
         });
     smog.addActionListener(
         e -> {
+          calculateContext.setCalculateStrategy(smogScore);
           scoreLabel.setText(
-              smogMsg
-                  + decimalFormat.format(
-                      calculateService.smogMethod(
-                          getFormattedInput(), getFormattedInput().split(" "))));
+              GuiMessages.SMOG_MSG
+                  + decimalFormat.format(calculateContext.calculateScore(getFormattedInput())));
         });
     cl.addActionListener(
         e -> {
+          calculateContext.setCalculateStrategy(colemanScore);
           scoreLabel.setText(
-              clMsg + decimalFormat.format(calculateService.colemanMethod(getFormattedInput())));
+              GuiMessages.COLEMAN_MSG
+                  + decimalFormat.format(calculateContext.calculateScore(getFormattedInput())));
         });
 
     all.addActionListener(
         e -> {
-          scoreLabel.setText(getPrepareMsgForAllParameters());
+          scoreLabel.setText(msgCreationService.prepareMsg(getFormattedInput()));
         });
     fileButton.addActionListener(
         e -> {
           String content = fileReaderService.readFromFile(getRawInput());
           if (content.equals("file does not exist")) {
-            labelWithParams.setText(wrongFileMsg);
+            labelWithParams.setText(GuiMessages.WRONG_FILE_MSG);
           } else {
             labelWithParams.setText(content);
           }
