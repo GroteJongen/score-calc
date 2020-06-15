@@ -51,31 +51,39 @@ public class CountingService {
   }
 
   private static int countSyllablesInWord(String word) {
-    int syllablesCount = 0;
+    final Pattern doubleVowelPattern = Pattern.compile("[ayeiou]{2}[ayeiou]*");
+    final Pattern singleVowelPattern = Pattern.compile("[ayeiou]");
+    final String suffix = "e";
+    final int minimalSyllablesCount = 1;
 
     String processedWord = word;
-    if (processedWord.endsWith("e")) {
+    int syllablesCount = 0;
+
+    if (processedWord.endsWith(suffix)) {
       processedWord = processedWord.substring(0, processedWord.length() - 1);
     }
 
-    Pattern doubleVowelPattern = Pattern.compile("[ayeiou]{2}[ayeiou]*");
     Matcher doubleVowelMatcher = doubleVowelPattern.matcher(processedWord);
+
     while (doubleVowelMatcher.find()) {
       syllablesCount++;
     }
+
     processedWord = processedWord.replaceAll(doubleVowelPattern.pattern(), EMPTY_STRING);
 
-    Pattern singleVowelPattern = Pattern.compile("[ayeiou]");
     Matcher singleVowelMatcher = singleVowelPattern.matcher(processedWord);
+
     while (singleVowelMatcher.find()) {
       syllablesCount++;
     }
-    return syllablesCount == 0 ? 1 : syllablesCount;
+
+    return syllablesCount == 0 ? minimalSyllablesCount : syllablesCount;
   }
 
-  public static int countPolySyllables(String[] worden) {
+  public static int countPolySyllables(String text) {
+    String[] words = text.split(SPLITTER);
     int counter = 0;
-    for (String s : worden) {
+    for (String s : words) {
       String word = s.toLowerCase();
       if (countSyllables(word) > 2) {
         counter++;

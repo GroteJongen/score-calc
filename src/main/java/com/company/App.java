@@ -3,6 +3,7 @@ package com.company;
 import com.Calculators.*;
 import com.display.DisplayService;
 import com.display.Messages;
+import com.display.ParameterService;
 import com.input.FileReaderService;
 import com.input.FormatterService;
 import com.input.UserInputService;
@@ -19,47 +20,51 @@ public class App {
   private UserInputService userInputService;
   private ClassifyService classifyService;
   private CalculateContext calculateContext;
-  AriIndexScore ariIndexScore;
-  SmogScore smogScore;
-  FleschKincaidScore fleschKincaidScore;
-  ColemanScore colemanScore;
+  private AriIndexScore ariIndexScore;
+  private ParameterService parameterService;
+  private SmogScore smogScore;
+  private FleschKincaidScore fleschKincaidScore;
+  private ColemanScore colemanScore;
+  private ScoreService scoreService;
 
   public void runApp() {
     String formattedString =
         formatterService.formatText(Objects.requireNonNull(getStringFromConsoleOrFile()));
-    displayService.printAllParametersOfText(formattedString);
+    displayService.printAllParametersOfText(
+        parameterService.createParametersFromText(formattedString));
+    Score score = scoreService.calculateScoresFromText(formattedString);
     displayService.printMsg(Messages.CHOICE_MSG);
     String method = userInputService.getInputFromUser();
     switch (method) {
       case "ARI":
         calculateContext.setCalculateStrategy(ariIndexScore);
         classifyService.classify(
-            Messages.ARI_METHOD_NAME, calculateContext.calculateScore(formattedString));
+            Messages.ARI_METHOD_NAME, score.getAriScore());
         break;
       case "FK":
         calculateContext.setCalculateStrategy(fleschKincaidScore);
         classifyService.classify(
-            Messages.FK_METHOD_NAME, calculateContext.calculateScore(formattedString));
+            Messages.FK_METHOD_NAME,score.getFkScore());
         break;
       case "SMOG":
         calculateContext.setCalculateStrategy(smogScore);
         classifyService.classify(
-            Messages.SMOG_METHOD_NAME, calculateContext.calculateScore(formattedString));
+            Messages.SMOG_METHOD_NAME, score.getSmogScore());
         break;
       case "CL":
         calculateContext.setCalculateStrategy(colemanScore);
         classifyService.classify(
-            Messages.CL_METHOD_NAME, calculateContext.calculateScore(formattedString));
+            Messages.CL_METHOD_NAME,score.getClScore());
         break;
       case "ALL":
-        printAllNecessaryParameters(formattedString);
+        printAvgAge(formattedString);
         break;
       default:
         displayService.printMsg(Messages.NO_METHOD_CHOSEN);
     }
   }
 
-  private void printAllNecessaryParameters(String text) {
+  private void printAvgAge(String text) {
     calculateContext.setCalculateStrategy(ariIndexScore);
     double ariAge =
         classifyService.classify(Messages.ARI_METHOD_NAME, calculateContext.calculateScore(text));

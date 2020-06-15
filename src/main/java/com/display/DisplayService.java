@@ -1,28 +1,19 @@
 package com.display;
-
-import com.counter.CountingService;
+import static com.counter.CountingService.*;
 
 public class DisplayService {
-  private CountingService countingService;
+  //TODO convert variables to string format.
+  //TODO Create Parameters class containing logic for counting words in text
+  public String printAllParametersOfText(Parameters parameters) {
+    String words = " Words: " + parameters.getWordsCount() + "|";
+    String sentences = " Sentences: " + parameters.getSentencesCount() + "|";
+    String characters = " Characters: " + parameters.getCharactersCount() + "|";
+    String syllables = " Syllables: " + parameters.getSyllablesCount() + "|";
+    String polySyllables =
+        " Polysyllables: " + parameters.getPolySyllableCount() + "|";
 
-  public DisplayService(CountingService countingService) {
-    this.countingService = countingService;
+    return words + sentences + characters + syllables + polySyllables;
   }
-
-  public String printAllParametersOfText(String text) {
-    String words = " Words: " + countingService.countWordsInText(text) + "|";
-    String sentences = " Sentences: " + countingService.countSentencesInText(text) + "|";
-    String characters = " Characters: " + countingService.countCharactersInText(text)+ "|";
-    String syllables = " Syllables: " + countingService.countSyllables(text) + "|";
-    String polySyllables = " Polysyllables: " + countingService.countPolySyllables(text.split(" ")) + "|";
-
-    return words +
-            sentences +
-            characters +
-            syllables +
-            polySyllables;
-  }
-
   public void printMsg(String msg) {
     System.out.println(msg);
   }

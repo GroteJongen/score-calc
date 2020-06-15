@@ -1,8 +1,8 @@
 package com.company;
 
 import com.Calculators.*;
-import com.counter.CountingService;
 import com.display.DisplayService;
+import com.display.ParameterService;
 import com.gui.WelcomeScreen;
 import com.input.FileReaderService;
 import com.input.FormatterService;
@@ -12,8 +12,7 @@ public class Main {
 
   public static void main(String[] args) {
 
-    CountingService countingService = new CountingService();
-    DisplayService displayService = new DisplayService(countingService);
+    DisplayService displayService = new DisplayService();
     FormatterService formatterService = new FormatterService();
     FileReaderService fileReaderService = new FileReaderService(formatterService);
     UserInputService userInputService = new UserInputService();
@@ -23,6 +22,7 @@ public class Main {
     ColemanScore colemanScore = new ColemanScore();
     FleschKincaidScore fleschKincaidScore = new FleschKincaidScore();
     CalculateContext calculateContext = new CalculateContext();
+    ParameterService parameterService = new ParameterService();
     App app =
         new App(
             displayService,
@@ -32,10 +32,11 @@ public class Main {
             classifyService,
             calculateContext,
             ariIndexScore,
+            parameterService,
             smogScore,
             fleschKincaidScore,
             colemanScore);
-     //app.runApp();
-     WelcomeScreen welcomeScreen = new WelcomeScreen();
+    // app.runApp();
+    WelcomeScreen welcomeScreen = new WelcomeScreen();
   }
 }
