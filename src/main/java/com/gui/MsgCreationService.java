@@ -1,73 +1,61 @@
 package com.gui;
 
 import com.Calculators.*;
-import com.display.Messages;
+import com.company.Score;
 import lombok.AllArgsConstructor;
 
 import java.text.DecimalFormat;
+
+import static com.display.Messages.*;
+import static com.display.Messages.CL_METHOD_NAME;
+
 @AllArgsConstructor
 public class MsgCreationService {
   private ClassifyService classifyService;
-  private CalculateContext calculateContext;
-  private AriIndexScore ariIndexScore;
-  private SmogScore smogScore;
-  private FleschKincaidScore fleschKincaidScore;
-  private ColemanScore colemanScore;
 
-  private double getAriAge(String text) {
-    calculateContext.setCalculateStrategy(ariIndexScore);
-    return classifyService.classify(
-        Messages.ARI_METHOD_NAME, calculateContext.calculateScore(text));
+  private double getAriAge(Score score) {
+    return classifyService.classify(ARI_METHOD_NAME, score.getAriScore()).getValue();
   }
 
-  private double getClAge(String text) {
-    calculateContext.setCalculateStrategy(colemanScore);
-    return classifyService.classify(Messages.CL_METHOD_NAME, calculateContext.calculateScore(text));
+  private double getClAge(Score score) {
+    return classifyService.classify(CL_METHOD_NAME, score.getClScore()).getValue();
   }
 
-  private double getSmogAge(String text) {
-    calculateContext.setCalculateStrategy(smogScore);
-    return classifyService.classify(
-        Messages.SMOG_METHOD_NAME, calculateContext.calculateScore(text));
+  private double getSmogAge(Score score) {
+    return classifyService.classify(FK_METHOD_NAME, score.getFkScore()).getValue();
   }
 
-  private double getFkAge(String text) {
-    calculateContext.setCalculateStrategy(fleschKincaidScore);
-    return classifyService.classify(Messages.FK_METHOD_NAME, calculateContext.calculateScore(text));
+  private double getFkAge(Score score) {
+    return classifyService.classify(SMOG_METHOD_NAME, score.getSmogScore()).getValue();
   }
 
-  String prepareMsg(String text) {
+  String prepareMsg(Score score) {
     DecimalFormat decimalFormat = new DecimalFormat("##.00");
     final String yearsMsg = " years old";
     final String rowSplitter = " | ";
-    calculateContext.setCalculateStrategy(ariIndexScore);
     String ariResult =
         GuiMessages.ARI_MSG
-            + decimalFormat.format(calculateContext.calculateScore(text))
+            + decimalFormat.format(score.getAriScore())
             + rowSplitter
-            + getAriAge(text)
+            + getAriAge(score)
             + yearsMsg;
-    calculateContext.setCalculateStrategy(fleschKincaidScore);
     String fkResult =
         GuiMessages.FK_MSG
-            + decimalFormat.format(calculateContext.calculateScore(text))
+            + decimalFormat.format(score.getFkScore())
             + rowSplitter
-            + getFkAge(text)
+            + getFkAge(score)
             + yearsMsg;
-    calculateContext.setCalculateStrategy(smogScore);
     String smogResult =
         GuiMessages.SMOG_MSG
-            + decimalFormat.format(
-                calculateContext.calculateScore(text))
+            + decimalFormat.format(score.getSmogScore())
             + rowSplitter
-            + getSmogAge(text)
+            + getSmogAge(score)
             + yearsMsg;
-    calculateContext.setCalculateStrategy(colemanScore);
     String clResult =
         GuiMessages.COLEMAN_MSG
-            + decimalFormat.format(calculateContext.calculateScore(text))
+            + decimalFormat.format(score.getClScore())
             + rowSplitter
-            + getClAge(text)
+            + getClAge(score)
             + yearsMsg;
 
     return ariResult + rowSplitter + fkResult + rowSplitter + smogResult + rowSplitter + clResult;

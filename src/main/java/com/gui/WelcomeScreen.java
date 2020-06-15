@@ -1,8 +1,10 @@
 package com.gui;
 
 import com.Calculators.*;
-import com.counter.CountingService;
+import com.company.Score;
+import com.company.ScoreService;
 import com.display.DisplayService;
+import com.display.ParameterService;
 import com.input.FileReaderService;
 import com.input.FormatterService;
 
@@ -14,9 +16,9 @@ import java.text.DecimalFormat;
 
 public class WelcomeScreen extends JFrame implements ActionListener {
 
-  private JPanel jPanel = new JPanel();
+  private JPanel firstPanel = new JPanel();
   private JFrame calculateWindow = new JFrame();
-  private JPanel panelWindow = new JPanel();
+  private JPanel parametersWindow = new JPanel();
   private JFrame jFrame = new JFrame();
   private JButton jButton = new JButton("Tekst z konsoli");
   private JButton fileButton = new JButton("Wczytanie Z pliku");
@@ -31,34 +33,29 @@ public class WelcomeScreen extends JFrame implements ActionListener {
   private JLabel scoreLabel = new JLabel();
   private JTextField nameTextField = new JTextField();
 
-  private CountingService countingService = new CountingService();
-  private DisplayService displayService = new DisplayService(countingService);
+  private DisplayService displayService = new DisplayService();
   private FormatterService formatterService = new FormatterService();
   private DecimalFormat decimalFormat = new DecimalFormat("##.00");
   private FileReaderService fileReaderService = new FileReaderService(formatterService);
+  private ParameterService parameterService = new ParameterService();
 
   private AriIndexScore ariIndexScore = new AriIndexScore();
   private SmogScore smogScore = new SmogScore();
   private FleschKincaidScore fleschKincaidScore = new FleschKincaidScore();
   private ColemanScore colemanScore = new ColemanScore();
-  private CalculateContext calculateContext = new CalculateContext();
   private ClassifyService classifyService = new ClassifyService();
-  private MsgCreationService msgCreationService =
-      new MsgCreationService(
-          classifyService,
-          calculateContext,
-          ariIndexScore,
-          smogScore,
-          fleschKincaidScore,
-          colemanScore);
+  private MsgCreationService msgCreationService = new MsgCreationService(classifyService);
+  private ScoreService scoreService = new ScoreService(smogScore,fleschKincaidScore,colemanScore,ariIndexScore);
+  private Score score;
+
 
   public WelcomeScreen() {
     prepareAll();
   }
-
   @Override
   public void actionPerformed(ActionEvent e) {
-    labelWithParams.setText(displayService.printAllParametersOfText(getFormattedInput()));
+    labelWithParams.setText(displayService.printAllParametersOfText(parameterService.createParametersFromText(getFormattedInput())));
+    score = scoreService.calculateScoresFromText(getFormattedInput());
     jFrame.setVisible(false);
     calculateWindow.setVisible(true);
   }
@@ -80,7 +77,7 @@ public class WelcomeScreen extends JFrame implements ActionListener {
     jFrame.setVisible(true);
     jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     jFrame.setTitle("My first gui");
-    calculateWindow.add(panelWindow, BorderLayout.CENTER);
+    calculateWindow.add(parametersWindow, BorderLayout.CENTER);
     nameTextField.setBounds(80, 20, 100, 30);
     add(nameTextField);
   }
@@ -102,25 +99,25 @@ public class WelcomeScreen extends JFrame implements ActionListener {
   }
 
   private void preparePanels() {
-    panelWindow.setBorder(BorderFactory.createEmptyBorder(30, 30, 10, 30));
-    panelWindow.setLayout(new GridLayout(0, 1));
+    parametersWindow.setBorder(BorderFactory.createEmptyBorder(30, 30, 10, 30));
+    parametersWindow.setLayout(new GridLayout(0, 1));
     ari.setBounds(5, 5, 5, 5);
     fileButton.setBounds(5, 5, 5, 5);
-    panelWindow.add(labelWithParams);
-    panelWindow.add(ari);
-    panelWindow.add(fk);
-    panelWindow.add(smog);
-    panelWindow.add(cl);
-    panelWindow.add(all);
-    panelWindow.add(scoreLabel);
+    parametersWindow.add(labelWithParams);
+    parametersWindow.add(ari);
+    parametersWindow.add(fk);
+    parametersWindow.add(smog);
+    parametersWindow.add(cl);
+    parametersWindow.add(all);
+    parametersWindow.add(scoreLabel);
 
-    jPanel.setBorder(BorderFactory.createEmptyBorder(30, 30, 10, 30));
-    jPanel.setLayout(new GridLayout(0, 1));
-    jPanel.add(label);
-    jPanel.add(nameTextField);
-    jPanel.add(jButton);
-    jPanel.add(fileButton);
-    jFrame.add(jPanel, BorderLayout.CENTER);
+    firstPanel.setBorder(BorderFactory.createEmptyBorder(30, 30, 10, 30));
+    firstPanel.setLayout(new GridLayout(0, 1));
+    firstPanel.add(label);
+    firstPanel.add(nameTextField);
+    firstPanel.add(jButton);
+    firstPanel.add(fileButton);
+    jFrame.add(firstPanel, BorderLayout.CENTER);
   }
 
   private void prepareButtons() {
@@ -133,36 +130,32 @@ public class WelcomeScreen extends JFrame implements ActionListener {
     jButton.addActionListener(this);
     fk.addActionListener(
         e -> {
-          calculateContext.setCalculateStrategy(fleschKincaidScore);
           scoreLabel.setText(
               GuiMessages.FK_MSG
-                  + decimalFormat.format(calculateContext.calculateScore(getFormattedInput())));
+                  + decimalFormat.format(score.getFkScore()));
         });
     ari.addActionListener(
         e -> {
-          calculateContext.setCalculateStrategy(ariIndexScore);
           scoreLabel.setText(
               GuiMessages.ARI_MSG
-                  + decimalFormat.format(calculateContext.calculateScore(getFormattedInput())));
+                  + decimalFormat.format(score.getAriScore()));
         });
     smog.addActionListener(
         e -> {
-          calculateContext.setCalculateStrategy(smogScore);
           scoreLabel.setText(
               GuiMessages.SMOG_MSG
-                  + decimalFormat.format(calculateContext.calculateScore(getFormattedInput())));
+                  + decimalFormat.format(score.getSmogScore()));
         });
     cl.addActionListener(
         e -> {
-          calculateContext.setCalculateStrategy(colemanScore);
           scoreLabel.setText(
               GuiMessages.COLEMAN_MSG
-                  + decimalFormat.format(calculateContext.calculateScore(getFormattedInput())));
+                  + decimalFormat.format(score.getClScore()));
         });
 
     all.addActionListener(
         e -> {
-          scoreLabel.setText(msgCreationService.prepareMsg(getFormattedInput()));
+          scoreLabel.setText(msgCreationService.prepareMsg(score));
         });
     fileButton.addActionListener(
         e -> {

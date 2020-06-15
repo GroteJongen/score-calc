@@ -1,9 +1,10 @@
 package com.company;
 
 import com.Calculators.*;
+import lombok.AllArgsConstructor;
 
+@AllArgsConstructor
 public class ScoreService {
-  private CalculateContext calculateContext;
   private SmogScore smogScore;
   private FleschKincaidScore fleschKincaidScore;
   private ColemanScore colemanScore;

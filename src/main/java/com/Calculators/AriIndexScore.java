@@ -2,7 +2,7 @@ package com.Calculators;
 
 import com.counter.CountingService;
 
-public class AriIndexScore implements CalculateStrategy {
+public class AriIndexScore {
 
   public double calculateScore(String text) {
     if (text.isEmpty()) {

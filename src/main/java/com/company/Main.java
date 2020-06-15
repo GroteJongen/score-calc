@@ -21,8 +21,8 @@ public class Main {
     SmogScore smogScore = new SmogScore();
     ColemanScore colemanScore = new ColemanScore();
     FleschKincaidScore fleschKincaidScore = new FleschKincaidScore();
-    CalculateContext calculateContext = new CalculateContext();
     ParameterService parameterService = new ParameterService();
+    ScoreService scoreService = new ScoreService(smogScore,fleschKincaidScore,colemanScore,ariIndexScore);
     App app =
         new App(
             displayService,
@@ -30,13 +30,12 @@ public class Main {
             formatterService,
             userInputService,
             classifyService,
-            calculateContext,
             ariIndexScore,
             parameterService,
             smogScore,
             fleschKincaidScore,
-            colemanScore);
-    // app.runApp();
+            colemanScore, scoreService);
+     //app.runApp();
     WelcomeScreen welcomeScreen = new WelcomeScreen();
   }
 }

@@ -2,7 +2,7 @@ package com.Calculators;
 
 import com.counter.CountingService;
 
-public class FleschKincaidScore implements CalculateStrategy {
+public class FleschKincaidScore {
 
   public double calculateScore(String text) {
     double words = CountingService.countWordsInText(text);
