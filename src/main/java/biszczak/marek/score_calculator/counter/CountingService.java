@@ -1,4 +1,4 @@
-package com.counter;
+package biszczak.marek.score_calculator.counter;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

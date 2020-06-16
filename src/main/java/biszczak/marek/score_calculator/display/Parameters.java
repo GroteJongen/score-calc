@@ -1,4 +1,4 @@
-package com.display;
+package biszczak.marek.score_calculator.display;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -7,7 +7,6 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 @Builder
-//MODEL
 class Parameters {
     private final int wordsCount;
     private final int syllablesCount;

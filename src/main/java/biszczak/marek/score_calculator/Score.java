@@ -1,4 +1,4 @@
-package com.company;
+package biszczak.marek.score_calculator;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

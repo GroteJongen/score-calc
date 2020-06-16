@@ -1,4 +1,4 @@
-package com.input;
+package biszczak.marek.score_calculator.input;
 
 public class FormatterService {
     public String formatText(String text) {

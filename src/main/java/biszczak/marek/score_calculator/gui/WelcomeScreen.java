@@ -1,12 +1,11 @@
-package com.gui;
+package biszczak.marek.score_calculator.gui;
 
-import com.Calculators.*;
-import com.company.Score;
-import com.company.ScoreService;
-import com.display.DisplayService;
-import com.display.ParameterService;
-import com.input.FileReaderService;
-import com.input.FormatterService;
+import biszczak.marek.score_calculator.Score;
+import biszczak.marek.score_calculator.ScoreService;
+import biszczak.marek.score_calculator.calculators.*;
+import biszczak.marek.score_calculator.display.DisplayService;
+import biszczak.marek.score_calculator.display.ParameterService;
+import biszczak.marek.score_calculator.input.FormatterService;
 
 import javax.swing.*;
 import java.awt.*;
@@ -21,7 +20,6 @@ public class WelcomeScreen extends JFrame implements ActionListener {
   private JPanel parametersWindow = new JPanel();
   private JFrame jFrame = new JFrame();
   private JButton jButton = new JButton("Tekst z konsoli");
-  private JButton fileButton = new JButton("Wczytanie Z pliku");
   private JButton ari = new JButton("ARI Method");
   private JButton fk = new JButton("FK Method");
   private JButton smog = new JButton("SMOG Method");
@@ -36,7 +34,6 @@ public class WelcomeScreen extends JFrame implements ActionListener {
   private DisplayService displayService = new DisplayService();
   private FormatterService formatterService = new FormatterService();
   private DecimalFormat decimalFormat = new DecimalFormat("##.00");
-  private FileReaderService fileReaderService = new FileReaderService(formatterService);
   private ParameterService parameterService = new ParameterService();
 
   private AriIndexScore ariIndexScore = new AriIndexScore();
@@ -102,7 +99,6 @@ public class WelcomeScreen extends JFrame implements ActionListener {
     parametersWindow.setBorder(BorderFactory.createEmptyBorder(30, 30, 10, 30));
     parametersWindow.setLayout(new GridLayout(0, 1));
     ari.setBounds(5, 5, 5, 5);
-    fileButton.setBounds(5, 5, 5, 5);
     parametersWindow.add(labelWithParams);
     parametersWindow.add(ari);
     parametersWindow.add(fk);
@@ -116,16 +112,10 @@ public class WelcomeScreen extends JFrame implements ActionListener {
     firstPanel.add(label);
     firstPanel.add(nameTextField);
     firstPanel.add(jButton);
-    firstPanel.add(fileButton);
     jFrame.add(firstPanel, BorderLayout.CENTER);
   }
 
   private void prepareButtons() {
-    fileButton.addActionListener(
-        (item) -> {
-          jFrame.setVisible(false);
-          calculateWindow.setVisible(true);
-        });
     jButton.setBounds(5, 5, 5, 5);
     jButton.addActionListener(this);
     fk.addActionListener(
@@ -156,15 +146,6 @@ public class WelcomeScreen extends JFrame implements ActionListener {
     all.addActionListener(
         e -> {
           scoreLabel.setText(msgCreationService.prepareMsg(score));
-        });
-    fileButton.addActionListener(
-        e -> {
-          String content = fileReaderService.readFromFile(getRawInput());
-          if (content.equals("file does not exist")) {
-            labelWithParams.setText(GuiMessages.WRONG_FILE_MSG);
-          } else {
-            labelWithParams.setText(content);
-          }
         });
   }
 
