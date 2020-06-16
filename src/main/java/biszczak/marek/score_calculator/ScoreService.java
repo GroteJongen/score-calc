@@ -1,7 +1,10 @@
-package com.company;
+package biszczak.marek.score_calculator;
 
-import com.Calculators.*;
 import lombok.AllArgsConstructor;
+import biszczak.marek.score_calculator.calculators.AriIndexScore;
+import biszczak.marek.score_calculator.calculators.ColemanScore;
+import biszczak.marek.score_calculator.calculators.FleschKincaidScore;
+import biszczak.marek.score_calculator.calculators.SmogScore;
 
 @AllArgsConstructor
 public class ScoreService {

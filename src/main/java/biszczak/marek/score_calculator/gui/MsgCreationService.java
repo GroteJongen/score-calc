@@ -1,16 +1,16 @@
-package com.gui;
+package biszczak.marek.score_calculator.gui;
 
-import com.Calculators.*;
-import com.company.Score;
+import biszczak.marek.score_calculator.Score;
 import lombok.AllArgsConstructor;
+import biszczak.marek.score_calculator.calculators.ClassifyService;
 
 import java.text.DecimalFormat;
 
-import static com.display.Messages.*;
-import static com.display.Messages.CL_METHOD_NAME;
+import static biszczak.marek.score_calculator.display.Messages.*;
+import static biszczak.marek.score_calculator.display.Messages.CL_METHOD_NAME;
 
 @AllArgsConstructor
-public class MsgCreationService {
+class MsgCreationService {
   private ClassifyService classifyService;
 
   private double getAriAge(Score score) {
@@ -34,28 +34,33 @@ public class MsgCreationService {
     final String yearsMsg = " years old";
     final String rowSplitter = " | ";
     final String whitespace = " ";
+    final String yearsSplitter = "/";
     String ariResult =
         GuiMessages.ARI_MSG
             + decimalFormat.format(score.getAriScore())
             + whitespace
+            + yearsSplitter
             + getAriAge(score)
             + yearsMsg;
     String fkResult =
         GuiMessages.FK_MSG
             + decimalFormat.format(score.getFkScore())
             + whitespace
+            + yearsSplitter
             + getFkAge(score)
             + yearsMsg;
     String smogResult =
         GuiMessages.SMOG_MSG
             + decimalFormat.format(score.getSmogScore())
             + whitespace
+            + yearsSplitter
             + getSmogAge(score)
             + yearsMsg;
     String clResult =
         GuiMessages.COLEMAN_MSG
             + decimalFormat.format(score.getClScore())
             + whitespace
+            + yearsSplitter
             + getClAge(score)
             + yearsMsg;
 

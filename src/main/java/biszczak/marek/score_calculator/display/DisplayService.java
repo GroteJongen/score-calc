@@ -1,9 +1,6 @@
-package com.display;
-import static com.counter.CountingService.*;
+package biszczak.marek.score_calculator.display;
 
 public class DisplayService {
-  //TODO convert variables to string format.
-  //TODO Create Parameters class containing logic for counting words in text
   public String printAllParametersOfText(Parameters parameters) {
     String words = " Words: " + parameters.getWordsCount() + "|";
     String sentences = " Sentences: " + parameters.getSentencesCount() + "|";
@@ -15,6 +12,6 @@ public class DisplayService {
     return words + sentences + characters + syllables + polySyllables;
   }
   public void printMsg(String msg) {
-    System.out.println(msg);
+    System.out.printf(msg + "\n");
   }
 }

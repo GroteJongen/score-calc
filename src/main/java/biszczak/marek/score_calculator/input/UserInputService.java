@@ -1,4 +1,4 @@
-package com.input;
+package biszczak.marek.score_calculator.input;
 
 import java.util.Scanner;
 

@@ -1,6 +1,6 @@
-package com.display;
+package biszczak.marek.score_calculator.display;
 
-import static com.counter.CountingService.*;
+import static biszczak.marek.score_calculator.counter.CountingService.*;
 
 public class ParameterService {
 

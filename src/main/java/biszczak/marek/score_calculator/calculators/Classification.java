@@ -1,4 +1,4 @@
-package com.Calculators;
+package biszczak.marek.score_calculator.calculators;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -8,6 +8,5 @@ import lombok.Getter;
 public class Classification {
 
   private String methodName;
-  private String msg;
   private double value;
 }
