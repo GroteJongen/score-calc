@@ -22,39 +22,40 @@ public class MsgCreationService {
   }
 
   private double getSmogAge(Score score) {
-    return classifyService.classify(FK_METHOD_NAME, score.getFkScore()).getValue();
+    return classifyService.classify(FK_METHOD_NAME, score.getSmogScore()).getValue();
   }
 
   private double getFkAge(Score score) {
-    return classifyService.classify(SMOG_METHOD_NAME, score.getSmogScore()).getValue();
+    return classifyService.classify(SMOG_METHOD_NAME, score.getFkScore()).getValue();
   }
 
   String prepareMsg(Score score) {
     DecimalFormat decimalFormat = new DecimalFormat("##.00");
     final String yearsMsg = " years old";
     final String rowSplitter = " | ";
+    final String whitespace = " ";
     String ariResult =
         GuiMessages.ARI_MSG
             + decimalFormat.format(score.getAriScore())
-            + rowSplitter
+            + whitespace
             + getAriAge(score)
             + yearsMsg;
     String fkResult =
         GuiMessages.FK_MSG
             + decimalFormat.format(score.getFkScore())
-            + rowSplitter
+            + whitespace
             + getFkAge(score)
             + yearsMsg;
     String smogResult =
         GuiMessages.SMOG_MSG
             + decimalFormat.format(score.getSmogScore())
-            + rowSplitter
+            + whitespace
             + getSmogAge(score)
             + yearsMsg;
     String clResult =
         GuiMessages.COLEMAN_MSG
             + decimalFormat.format(score.getClScore())
-            + rowSplitter
+            + whitespace
             + getClAge(score)
             + yearsMsg;
 
