@@ -116,31 +116,33 @@ public class WelcomeScreen extends JFrame implements ActionListener {
   }
 
   private void prepareButtons() {
+    String splitter = " / ";
+    String yearsMsg = " years old";
     jButton.setBounds(5, 5, 5, 5);
     jButton.addActionListener(this);
     fk.addActionListener(
         e -> {
           scoreLabel.setText(
               GuiMessages.FK_MSG
-                  + decimalFormat.format(score.getFkScore()));
+                  + decimalFormat.format(score.getFkScore()) + splitter +  msgCreationService.getFkAge(score) + yearsMsg);
         });
     ari.addActionListener(
         e -> {
           scoreLabel.setText(
               GuiMessages.ARI_MSG
-                  + decimalFormat.format(score.getAriScore()));
+                  + decimalFormat.format(score.getAriScore()) +  splitter + msgCreationService.getAriAge(score) + yearsMsg);
         });
     smog.addActionListener(
         e -> {
           scoreLabel.setText(
               GuiMessages.SMOG_MSG
-                  + decimalFormat.format(score.getSmogScore()));
+                  + decimalFormat.format(score.getSmogScore()) + splitter + msgCreationService.getSmogAge(score) + yearsMsg);
         });
     cl.addActionListener(
         e -> {
           scoreLabel.setText(
               GuiMessages.COLEMAN_MSG
-                  + decimalFormat.format(score.getClScore()));
+                  + decimalFormat.format(score.getClScore()) + splitter + msgCreationService.getClAge(score) + yearsMsg);
         });
 
     all.addActionListener(

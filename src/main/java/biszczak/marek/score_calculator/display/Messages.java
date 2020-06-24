@@ -8,6 +8,8 @@ public class Messages {
     public static final String CL_METHOD_NAME = "Coleman–Liau index: ";
     public static final String NO_METHOD_CHOSEN = "You did not choose any method, bye!";
     public static final String CHOICE_MSG = "Methods: ARI, FK, SMOG, CL, ALL";
+    public static final String RESULT_MSG = "The text should be understood by: ";
+    public  static final String YEARS_OLD_MSG = " years old";
     public static  final String LOWEST_AGE_MSG = " about 5-6 years old.";
     public static  final String ABOUT_24_YEARS_OLD_MSG = " about 24 years old.";
     public static  final String ABOUT_18_YEARS_OLD_MSG = " about 18 years old.";

@@ -2,11 +2,15 @@ package biszczak.marek.score_calculator;
 
 import biszczak.marek.score_calculator.calculators.ClassifyService;
 import biszczak.marek.score_calculator.display.DisplayService;
-import biszczak.marek.score_calculator.display.Messages;
 import biszczak.marek.score_calculator.display.ParameterService;
+import biszczak.marek.score_calculator.display.Parameters;
 import biszczak.marek.score_calculator.input.FormatterService;
 import biszczak.marek.score_calculator.input.UserInputService;
 import lombok.AllArgsConstructor;
+
+import java.text.DecimalFormat;
+
+import static biszczak.marek.score_calculator.display.Messages.*;
 
 @AllArgsConstructor
 class App {
@@ -22,32 +26,66 @@ class App {
     String formattedString = formatterService.formatText(userInputService.getInputFromUser());
     displayService.printAllParametersOfText(parameterService.createParametersFromText(formattedString));
     Score score = scoreService.calculateScoresFromText(formattedString);
-    displayService.printMsg(Messages.CHOICE_MSG);
+    Parameters parameter = parameterService.createParametersFromText(formattedString);
+    System.out.println(displayService.printAllParametersOfText(parameter));
+    displayService.printMsg(CHOICE_MSG);
     String method = userInputService.getInputFromUser();
     switch (method) {
       case "ARI":
-        classifyService.classify(Messages.ARI_METHOD_NAME, score.getAriScore());
+        printAriMsg(score);
         break;
       case "FK":
-        classifyService.classify(Messages.FK_METHOD_NAME, score.getFkScore());
+        printFkMsg(score);
         break;
       case "SMOG":
-        classifyService.classify(Messages.SMOG_METHOD_NAME, score.getSmogScore());
+        printSmogMsg(score);
         break;
       case "CL":
-        classifyService.classify(Messages.CL_METHOD_NAME, score.getClScore());
+        printColemanMsg(score);
         break;
       case "ALL":
         printAvgAge(score);
         break;
       default:
-        displayService.printMsg(Messages.NO_METHOD_CHOSEN);
+        displayService.printMsg(NO_METHOD_CHOSEN);
     }
   }
 
   private void printAvgAge(Score score) {
     AvgView avgView = avgViewService.createFromScore(score);
-    String msg = String.format("This text should be understood in average by %f years old", avgView.getAverage());
+    DecimalFormat decimalFormat = new DecimalFormat("##.00");
+    String msg =
+        String.format(
+            "This text should be understood in average by %s years old",
+            decimalFormat.format(avgView.getAverage()));
     displayService.printMsg(msg);
+  }
+
+  private void printAriMsg(Score score) {
+    System.out.println(
+        RESULT_MSG
+            + classifyService.classify(ARI_METHOD_NAME, score.getAriScore()).getValue()
+            + YEARS_OLD_MSG);
+  }
+
+  private void printFkMsg(Score score) {
+    System.out.println(
+        RESULT_MSG
+            + classifyService.classify(FK_METHOD_NAME, score.getFkScore()).getValue()
+            + YEARS_OLD_MSG);
+  }
+
+  private void printSmogMsg(Score score) {
+    System.out.println(
+       RESULT_MSG +
+            + classifyService.classify(SMOG_METHOD_NAME, score.getSmogScore()).getValue()
+            + YEARS_OLD_MSG);
+  }
+
+  private void printColemanMsg(Score score) {
+    System.out.println(
+        RESULT_MSG
+            + classifyService.classify(CL_METHOD_NAME, score.getClScore()).getValue()
+            + YEARS_OLD_MSG);
   }
 }

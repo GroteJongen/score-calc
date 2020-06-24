@@ -7,7 +7,7 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 @Builder
-class Parameters {
+public class Parameters {
     private final int wordsCount;
     private final int syllablesCount;
     private final int polySyllableCount;

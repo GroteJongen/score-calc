@@ -13,19 +13,19 @@ import static biszczak.marek.score_calculator.display.Messages.CL_METHOD_NAME;
 class MsgCreationService {
   private ClassifyService classifyService;
 
-  private double getAriAge(Score score) {
+  public double getAriAge(Score score) {
     return classifyService.classify(ARI_METHOD_NAME, score.getAriScore()).getValue();
   }
 
-  private double getClAge(Score score) {
+  public double getClAge(Score score) {
     return classifyService.classify(CL_METHOD_NAME, score.getClScore()).getValue();
   }
 
-  private double getSmogAge(Score score) {
+  public double getSmogAge(Score score) {
     return classifyService.classify(FK_METHOD_NAME, score.getSmogScore()).getValue();
   }
 
-  private double getFkAge(Score score) {
+  public double getFkAge(Score score) {
     return classifyService.classify(SMOG_METHOD_NAME, score.getFkScore()).getValue();
   }
 
